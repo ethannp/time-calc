@@ -22,10 +22,20 @@ function onChange() {
     let pay = 0;
     if (hours == 0) {
         pay = 500 * ((Math.floor(mins / 15) + (doRoundUp ? 1 : 0)) / 4)
-        document.getElementById("infoPay").textContent = "";
+        if (mins > 7) {
+            document.getElementById("infoPay").textContent = ((Math.floor(mins / 15) + (doRoundUp ? 1 : 0)) / 4) + "*500";
+        } 
+        else {
+            document.getElementById("infoPay").textContent = "";
+        }
     } else {
         pay = 500 + (hours - 1) * 450 + 450 * ((Math.floor(mins / 15) + (doRoundUp ? 1 : 0)) / 4)
-        document.getElementById("infoPay").textContent = `500 + ${(hours - 1)}*450${(mins > 7) ? " + " + ((Math.floor(mins / 15) + (doRoundUp ? 1 : 0)) / 4) + "*450" : ""}`
+        let str = `500${(hours > 1) ? (" + " + (hours - 1) + "*450") : ""}${(mins > 7) ? " + " + ((Math.floor(mins / 15) + (doRoundUp ? 1 : 0)) / 4) + "*450" : ""}`
+        if (str != "500") { 
+            document.getElementById("infoPay").textContent = str;
+        } else {
+            document.getElementById("infoPay").textContent = "";
+        }
     }
     document.getElementById("payResult").textContent = `$${pay}`
 }
