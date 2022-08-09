@@ -3,30 +3,42 @@
 
 <head>
     <title>Time Calculator</title>
-    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="main.css">
-    <script src="app.js" defer></script> 
+    <script src="app.js" defer></script>
 </head>
 
 <body>
-    <div class="center">
+    <div class="container center">
         <h1>Time Calculator</h1>
+        <p>Enter date</p>
+        <input type="date" id="date">
         <p>Enter start time</p>
         <input type="time" value="15:00" id="startTime" onchange="onChange()" required>
         <p>Enter end time</p>
         <input type="time" value="19:00" id="endTime" onchange="onChange()" required>
         <hr>
         <p>Time difference</p>
-        <span id="diffCont"><p><b id="diffResult">0h 0m</b></p></span>
+        <span id="diffCont">
+            <p style="margin-top: 0px;"><b id="diffResult">0h 0m</b></p>
+        </span>
         <p>Pay</p>
-        <span id="payCont"><p><b id="payResult">$</b></p></span>
-        <p id="infoPay">Small</p>
+        <span id="payCont">
+            <p style="margin-top: 0px;"><b id="payResult">$</b></p>
+        </span>
+        <p id="infoPay"></p>
+        <button onclick="save()" id="saveBtn">Save</button>
+        <p id="resultText"></p>
+        <hr>
     </div>
+    <h2 style="text-align:center;">History</h2>
+    <div class="container" id="ranges" style="margin-bottom: 20px;">
+    </div>
+
 
 </body>
 

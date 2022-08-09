@@ -1,3 +1,7 @@
+@font-face {
+    font-family: 'Segoe UI';
+    src: url("SEGOEUI.TTF");
+}
 html {
     margin: 0;
     padding: 0;
@@ -7,21 +11,26 @@ body {
     font-family: 'Segoe UI';
 }
 
-.center {
-    text-align: center;
+.container {
     max-width: 700px;
     margin: auto;
     display: block;
     width: 90%;
 }
+.center {
+    text-align: center;
+}
 
 p {
     font-size: 20px;
+    line-height: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 
 input {
     font-family: 'Segoe UI';
-    font-size: 24px;
+    font-size: 18px;
 }
 
 hr {
@@ -29,11 +38,57 @@ hr {
 }
 
 #diffCont {
-    margin-bottom: 50px;
+    margin-bottom: 25px;
     display: block;
 }
 
 #infoPay {
     color: grey;
     font-size: 16px;
+}
+
+button {
+    width: max-content;
+    padding: 5px 20px;
+    cursor: pointer;
+    background-color: white;
+    color:#3e3eda;
+    font-size: 20px;
+    border-radius: 2px;
+    border: 2px #3e3eda solid;
+    font-family: 'Segoe UI';
+    font-weight: 600;
+}
+
+#resultText {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+table {
+    width: 100%;
+    border: 1px solid black;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+tr:first-of-type {
+    border-bottom: 1px solid black;
+}
+
+th, td {
+    padding: 5px;
+    text-align: center;
+}
+
+details {
+    font-size: 20px;
+}
+
+details p {
+    margin-top: 5px;
+    font-size: 18px;
 }
