@@ -15,6 +15,8 @@ function onChange() {
     } else {
         document.getElementById("diffResult").textContent = `${hours}h ${mins}m`
     }
+    localStorage.setItem("defaultStart", document.getElementById("startTime").value);
+    localStorage.setItem("defaultEnd", document.getElementById("endTime").value);
     let pay = 0;
     if (hours == 0) {
         pay = (500).toFixed(2);
@@ -33,6 +35,20 @@ function onChange() {
 
 function loadData() {
     try {
+        let defaultStart = localStorage.getItem("defaultStart");
+        let defaultEnd = localStorage.getItem("defaultEnd");
+        if (defaultStart == null) {
+            localStorage.setItem("defaultStart", "11:00");
+            
+        }
+        if (defaultEnd == null) {
+            localStorage.setItem("defaultEnd", "15:00");
+        }
+        defaultStart = localStorage.getItem("defaultStart");
+        defaultEnd = localStorage.getItem("defaultEnd");
+        document.getElementById("startTime").value = defaultStart;
+        document.getElementById("endTime").value = defaultEnd;
+
         const data = JSON.parse(localStorage.getItem("data"));
         if (data == null) {
             localStorage.setItem("data", JSON.stringify([]));
