@@ -79,8 +79,14 @@ tr:first-of-type {
     border-bottom: 1px solid black;
 }
 
-th, td {
+th {
     padding: 5px;
+    text-align: center;
+}
+
+td {
+    padding: 2px;
+    overflow-wrap: break-word;
     text-align: center;
 }
 

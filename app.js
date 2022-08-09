@@ -70,8 +70,9 @@ function loadData() {
             let total = document.createElement("p");
             let totalVal = 0;
             let table = document.createElement("table");
+            table.innerHTML = `<col style="width: 20%"><col style="width: 25%"><col style="width: 20%"><col style="width: 20%"><col style="width: 15%">`
             let header = document.createElement("tr");
-            header.innerHTML = "<th>Date</th><th>Start - End</th><th>Time Diff</th><th>Pay</th><th>Delete</th>"
+            header.innerHTML = "<th>Date</th><th>Name</th><th>Start - End</th><th>Time<br>Pay</th><th>Delete</th>"
             table.appendChild(header);
             data[i].times.sort((a,b) => {return a.date - b.date})
             for (let j = 0; j < data[i].times.length; j++) {
@@ -89,7 +90,11 @@ function loadData() {
                     pay = (500 + (hours - 1) * 450 + 450 * (mins / 60)).toFixed(2);
                 }
                 totalVal += parseFloat(pay);
-                row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m</td><td>$${pay}</td>`;
+                let name = timeInfo.name;
+                if (name == undefined) {
+                    name = "";
+                }
+                row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${name}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m<br>$${pay}</td`;
                 const deleteRowBtn = document.createElement("td");
                 deleteRowBtn.innerHTML = "X"
                 deleteRowBtn.style.color = "red"
@@ -125,6 +130,7 @@ function save() {
     }
     const startTime = document.getElementById("startTime").value;
     const endTime = document.getElementById("endTime").value;
+    const name = document.getElementById("name").value;
     if (found == -1) {
         data.push({
             month: dateEntered[1],
@@ -133,6 +139,7 @@ function save() {
                 date: dateEntered[2],
                 startTime: startTime,
                 endTime: endTime,
+                name: name,
             }]
         })
         localStorage.setItem("data", JSON.stringify(data));
@@ -142,6 +149,7 @@ function save() {
             date: dateEntered[2],
             startTime: startTime,
             endTime: endTime,
+            name: name,
         });
         localStorage.setItem("data", JSON.stringify(data));
         loadData();
