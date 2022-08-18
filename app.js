@@ -108,6 +108,7 @@ function loadData() {
                     totalVal += parseFloat(pay);
                     pay = "$" + pay;
                 } else {
+                    totalVal += parseFloat(overridePay.replace(/[^0-9]/, ""));
                     pay = "* " +  overridePay;
                 }
 
