@@ -76,6 +76,7 @@ function loadData() {
         for (let i = 0; i < data.length; i++) {
             let range = data[i];
             let details = document.createElement("details");
+            let summary = document.createElement("summary");
             summary.setAttribute('id', months[parseInt(range.month) - 1] + range.year)
             summary.textContent = months[parseInt(range.month) - 1] + " " + range.year;
             let total = document.createElement("p");
