@@ -8,8 +8,8 @@ function onChange() {
     const hours = Math.floor(diffMinsTotal / 60);
     const mins = diffMinsTotal % 60;
     if (!isValidTime()) {
-        document.getElementById("diffResult").textContent = "Error"
-        document.getElementById("payResult").textContent = `$`
+        document.getElementById("diffResult").textContent = "Error";
+        document.getElementById("payResult").textContent = "$";
         document.getElementById("infoPay").textContent = "";
         return;
     } else {
@@ -17,20 +17,28 @@ function onChange() {
     }
     localStorage.setItem("defaultStart", document.getElementById("startTime").value);
     localStorage.setItem("defaultEnd", document.getElementById("endTime").value);
-    let pay = 0;
-    if (hours == 0) {
-        pay = (500).toFixed(2);
+    if (document.querySelector('input[name="calcType"]:checked').value == "default") {
+        let pay = 0;
+        if (hours == 0) {
+            pay = (500).toFixed(2);
+            document.getElementById("infoPay").textContent = "";
+        } else {
+            pay = (500 + (hours - 1) * 450 + 450 * (mins / 60)).toFixed(2);
+            let str = `500${(hours > 1) ? " + " + (hours - 1) + "*450" : ""}${(mins > 0) ? " + (" + mins + "/60)*450" : ""}`
+            if (str != "500") {
+                document.getElementById("infoPay").textContent = str;
+            } else {
+                document.getElementById("infoPay").textContent = "";
+            }
+        }
+        document.getElementById("payResult").textContent = "$" + pay;
+    } else if (document.getElementById("cas1").checked) {
+        document.getElementById("payResult").textContent = "$1600";
         document.getElementById("infoPay").textContent = "";
     } else {
-        pay = (500 + (hours - 1) * 450 + 450 * (mins / 60)).toFixed(2);
-        let str = `500${(hours > 1) ? " + " + (hours - 1) + "*450" : ""}${(mins > 0) ? " + (" + mins + "/60)*450" : ""}`
-        if (str != "500") {
-            document.getElementById("infoPay").textContent = str;
-        } else {
-            document.getElementById("infoPay").textContent = "";
-        }
+        document.getElementById("payResult").textContent = "$2400";
+        document.getElementById("infoPay").textContent = "";
     }
-    document.getElementById("payResult").textContent = `$${pay}`
 }
 
 function loadData() {
@@ -39,7 +47,7 @@ function loadData() {
         let defaultEnd = localStorage.getItem("defaultEnd");
         if (defaultStart == null) {
             localStorage.setItem("defaultStart", "11:00");
-            
+
         }
         if (defaultEnd == null) {
             localStorage.setItem("defaultEnd", "15:00");
@@ -55,8 +63,11 @@ function loadData() {
             return;
         }
         data.sort((a, b) => {
-            if(a.year != b.year) { return b.year - a.year }
-            else { return b.month - a.month }
+            if (a.year != b.year) {
+                return b.year - a.year
+            } else {
+                return b.month - a.month
+            }
         });
         const ranges = document.getElementById("ranges");
         while (ranges.firstChild) {
@@ -74,7 +85,9 @@ function loadData() {
             let header = document.createElement("tr");
             header.innerHTML = "<th>Date</th><th>Name</th><th>Start - End</th><th>Time<br>Pay</th><th>Delete</th>"
             table.appendChild(header);
-            data[i].times.sort((a,b) => {return a.date - b.date})
+            data[i].times.sort((a, b) => {
+                return a.date - b.date
+            })
             for (let j = 0; j < data[i].times.length; j++) {
                 let timeInfo = data[i].times[j];
                 let row = document.createElement("tr");
@@ -84,17 +97,24 @@ function loadData() {
                 const hours = Math.floor(diffMinsTotal / 60);
                 const mins = diffMinsTotal % 60;
                 let pay = 0;
-                if (hours == 0) {
-                    pay = (500).toFixed(2);
+                let overridePay = timeInfo.overridePay;
+                if (overridePay == undefined) {
+                    if (hours == 0) {
+                        pay = (500).toFixed(2);
+                    } else {
+                        pay = (500 + (hours - 1) * 450 + 450 * (mins / 60)).toFixed(2);
+                    }
+                    totalVal += parseFloat(pay);
+                    pay = "$" + pay;
                 } else {
-                    pay = (500 + (hours - 1) * 450 + 450 * (mins / 60)).toFixed(2);
+                    pay = "* " +  overridePay;
                 }
-                totalVal += parseFloat(pay);
+
                 let name = timeInfo.name;
                 if (name == undefined) {
                     name = "";
                 }
-                row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${name}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m<br>$${pay}</td`;
+                row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${name}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m<br>${pay}</td`;
                 const deleteRowBtn = document.createElement("td");
                 deleteRowBtn.innerHTML = "X"
                 deleteRowBtn.style.color = "red"
@@ -132,7 +152,7 @@ function save() {
     const endTime = document.getElementById("endTime").value;
     const name = document.getElementById("name").value;
     if (found == -1) {
-        data.push({
+        let newMonth = {
             month: dateEntered[1],
             year: dateEntered[0],
             times: [{
@@ -141,16 +161,24 @@ function save() {
                 endTime: endTime,
                 name: name,
             }]
-        })
+        }
+        if(!document.getElementById("default").checked) {
+            newMonth.times[0].overridePay = document.getElementById("payResult").textContent;
+        }
+        data.push(newDate);
         localStorage.setItem("data", JSON.stringify(data));
         loadData();
     } else {
-        data[found].times.push({
+        let newDate = {
             date: dateEntered[2],
             startTime: startTime,
             endTime: endTime,
             name: name,
-        });
+        }
+        if(!document.getElementById("default").checked) {
+            newDate.overridePay = document.getElementById("payResult").textContent;
+        }
+        data[found].times.push(newDate);
         localStorage.setItem("data", JSON.stringify(data));
         loadData();
     }
@@ -173,11 +201,16 @@ function isValidTime() {
 function deleteRow(i, j) {
     const data = JSON.parse(localStorage.getItem("data"));
     data.sort((a, b) => {
-        if(a.year != b.year) { return b.year - a.year }
-        else { return b.month - a.month }
+        if (a.year != b.year) {
+            return b.year - a.year
+        } else {
+            return b.month - a.month
+        }
     });
-    data[i].times.sort((a,b) => {return a.date - b.date})
-    if(confirm(`Would you like to delete data on ${months[parseInt(data[i].month) - 1]} ${parseInt(data[i].times[j].date)}?`)) {
+    data[i].times.sort((a, b) => {
+        return a.date - b.date
+    })
+    if (confirm(`Would you like to delete data on ${months[parseInt(data[i].month) - 1]} ${parseInt(data[i].times[j].date)}?`)) {
         data[i].times.splice(j, 1);
         if (data[i].times.length == 0) {
             data.splice(i, 1);

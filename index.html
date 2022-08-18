@@ -22,7 +22,15 @@
         <p>Enter end time</p>
         <input type="time" id="endTime" onchange="onChange()" required>
         <p>Enter name</p>
-        <input type="text" id="name" onchange="onChange()" required>
+        <input type="text" id="name" onchange="onChange()">
+        <p></p>
+    
+        <input type="radio" onchange="onChange()" name="calcType" id="default" value="default" checked>
+        <label for="default">Default Calculator</label>
+        <input type="radio" onchange="onChange()" name="calcType" id="cas1" value="cas1">
+        <label for="cas1">CAS 1 ($1600)</label>
+        <input type="radio" onchange="onChange()" name="calcType" id="cas2" value="cas2">
+        <label for="cas2">CAS 2 ($2400)</label>
         <hr>
         <p>Time difference</p>
         <span id="diffCont">
@@ -38,6 +46,7 @@
         <hr>
     </div>
     <h2 style="text-align:center;">History</h2>
+    <p><i style="font-size: 14px; padding-left: 20px;">* indicates that the pay is an override</i></p>
     <div class="container" id="ranges" style="margin-bottom: 20px;">
     </div>
 
