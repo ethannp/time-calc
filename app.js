@@ -2,6 +2,7 @@ const months = ["January", "February", "March", "April", "May", "June", "July", 
 
 function onChange() {
     document.getElementById("saveBtn").hidden = false;
+    document.getElementById("resultText").textContent = "";
     const startTime = document.getElementById("startTime").value.split(":").map(Number);
     const endTime = document.getElementById("endTime").value.split(":").map(Number);
     const diffMinsTotal = (endTime[0] * 60 + endTime[1]) - (startTime[0] * 60 + startTime[1]);
@@ -11,6 +12,8 @@ function onChange() {
         document.getElementById("diffResult").textContent = "Error";
         document.getElementById("payResult").textContent = "$";
         document.getElementById("infoPay").textContent = "";
+        document.getElementById("patientResult").textContent = "$"
+        document.getElementById("infoPatient").textContent = ""
         return;
     } else {
         document.getElementById("diffResult").textContent = `${hours}h ${mins}m`
@@ -39,9 +42,26 @@ function onChange() {
         document.getElementById("payResult").textContent = "$2400";
         document.getElementById("infoPay").textContent = "";
     }
+    let patient = 0;
+    if (hours == 0) {
+        patient = 0;
+        document.getElementById("infoPatient").textContent = ""
+    } else {
+        patient = ((650 * (hours-1)) + 650 * (mins / 60)).toFixed(2);
+        let str = `${(hours > 1) ? (hours - 1) + "*650" : ""}${(hours > 1 & mins > 0 ? " + " : "")}${(mins > 0) ? " (" + mins + "/60)*650" : ""}`
+        if (str != "650") {
+            document.getElementById("infoPatient").textContent = str;
+        } else {
+            document.getElementById("infoPatient").textContent = "";
+        }
+    }
+
+    document.getElementById("patientResult").textContent = `$${patient}`
 }
 
-function loadData() {
+
+
+function loadData(numMonths) {
     try {
         let defaultStart = localStorage.getItem("defaultStart");
         let defaultEnd = localStorage.getItem("defaultEnd");
@@ -69,11 +89,20 @@ function loadData() {
                 return b.month - a.month
             }
         });
+        if (numMonths == -1) {
+            numMonths = Math.min(data.length, 2)
+        } else if (numMonths == -2) {
+            numMonths = data.length;
+            document.getElementById("showMore").style.display = "none";
+        }
+        if (data.length > numMonths) {
+            document.getElementById("showMore").style.display = "";
+        }
         const ranges = document.getElementById("ranges");
         while (ranges.firstChild) {
             ranges.removeChild(ranges.firstChild);
         }
-        for (let i = 0; i < data.length; i++) {
+        for (let i = 0; i < numMonths; i++) {
             let range = data[i];
             let details = document.createElement("details");
             let summary = document.createElement("summary");
@@ -82,9 +111,9 @@ function loadData() {
             let total = document.createElement("p");
             let totalVal = 0;
             let table = document.createElement("table");
-            table.innerHTML = `<col style="width: 20%"><col style="width: 25%"><col style="width: 20%"><col style="width: 20%"><col style="width: 15%">`
+            table.innerHTML = `<col style="width: 15%"><col style="width: 25%"><col style="width: 20%"><col style="width: 25%"><col style="width: 15%">`
             let header = document.createElement("tr");
-            header.innerHTML = "<th>Date</th><th>Name</th><th>Start - End</th><th>Time<br>Pay</th><th>Delete</th>"
+            header.innerHTML = "<th>Date</th><th>Name</th><th>Start - End</th><th class='small'>Time<br>AnesthesiaPay<div class='bar'></div>PatientBill</th><th>Delete</th>"
             table.appendChild(header);
             data[i].times.sort((a, b) => {
                 return a.date - b.date
@@ -108,15 +137,21 @@ function loadData() {
                     totalVal += parseFloat(pay);
                     pay = "$" + pay;
                 } else {
-                    totalVal += parseFloat(overridePay.replace(/[^0-9]/, ""));
-                    pay = "* " +  overridePay;
+                    totalVal += parseFloat(overridePay.replace(/[^0-9.]/, ""));
+                    pay = "* " + overridePay;
                 }
 
                 let name = timeInfo.name;
                 if (name == undefined) {
                     name = "";
                 }
-                row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${name}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m<br>${pay}</td`;
+                let patient = 0;
+                if (hours == 0) {
+                    patient = 0;
+                } else {
+                    patient = (((hours-1) * 650) + 650 * (mins / 60)).toFixed(2)
+                }
+                row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${name}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m<br>${pay}<div class='bar'></div>$${patient}</td>`;
                 const deleteRowBtn = document.createElement("td");
                 deleteRowBtn.innerHTML = "X"
                 deleteRowBtn.style.color = "red"
@@ -164,12 +199,12 @@ function save() {
                 name: name,
             }]
         }
-        if(!document.getElementById("default").checked) {
+        if (!document.getElementById("default").checked) {
             newMonth.times[0].overridePay = document.getElementById("payResult").textContent;
         }
         data.push(newMonth);
         localStorage.setItem("data", JSON.stringify(data));
-        loadData();
+        loadData(Math.min(data.length, 2));
     } else {
         let newDate = {
             date: dateEntered[2],
@@ -177,12 +212,12 @@ function save() {
             endTime: endTime,
             name: name,
         }
-        if(!document.getElementById("default").checked) {
+        if (!document.getElementById("default").checked) {
             newDate.overridePay = document.getElementById("payResult").textContent;
         }
         data[found].times.push(newDate);
         localStorage.setItem("data", JSON.stringify(data));
-        loadData();
+        loadData(Math.min(data.length, 2));
     }
     document.getElementById("resultText").textContent = "Time added!";
     document.getElementById("resultText").style.color = "green";
@@ -218,12 +253,16 @@ function deleteRow(i, j) {
             data.splice(i, 1);
         }
         localStorage.setItem("data", JSON.stringify(data));
-        loadData();
+        loadData(Math.min(data.length, 2));
     }
 }
 
 window.onload = (event) => {
     document.getElementById("date").valueAsDate = new Date();
-    loadData();
+    loadData(-1);
     onChange();
 }
+
+document.getElementById("showMore").addEventListener("click", event => {
+    loadData(-2)
+})

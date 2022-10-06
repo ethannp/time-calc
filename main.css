@@ -17,6 +17,14 @@ body {
     display: block;
     width: 90%;
 }
+
+.largeContainer {
+    max-width: 700px;
+    margin: auto;
+    display: block;
+    width: 96%;
+}
+
 .center {
     text-align: center;
 }
@@ -43,6 +51,10 @@ hr {
 }
 
 #infoPay {
+    color: grey;
+    font-size: 16px;
+}
+#infoPatient {
     color: grey;
     font-size: 16px;
 }
@@ -97,4 +109,33 @@ details {
 details p {
     margin-top: 5px;
     font-size: 18px;
+}
+
+#showMore {
+    color: #3e3eda;
+}
+
+#showMore:hover {
+    cursor: pointer;
+}
+
+h2 {
+    margin-bottom: 5px;
+}
+
+.bar {
+    border-top: 1px solid grey;
+    width: 100%;
+    min-height: 1px;
+    margin-top: 2px;
+    display: block;
+}
+
+tr {
+    border-bottom: 1px dashed grey;
+}
+
+.small {
+    font-size: min(3vw, 14px);
+    
 }
