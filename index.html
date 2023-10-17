@@ -24,7 +24,7 @@
         <p>Enter name</p>
         <input type="text" id="name" onchange="onChange()">
         <p></p>
-    
+
         <input type="radio" onchange="onChange()" name="calcType" id="default" value="default" checked>
         <label for="default">Default Calculator</label>
         <input type="radio" onchange="onChange()" name="calcType" id="cas1" value="cas1">
@@ -55,7 +55,20 @@
     <div class="largeContainer" id="ranges" style="margin-bottom: 20px;">
     </div>
     <span class="container" id="showMore" style="display:none">[Show more months]</span>
-    <br>
+    <br />
+    <div class="container center">
+        <hr />
+        <br />
+
+        <div style="text-align: center; margin: auto;"><button onclick="exp()" id="export">Export</button>
+            &nbsp;&nbsp;&nbsp;
+            <button onclick="imp()" id="import">Import</button>
+            <br />
+            <p id="info"></p>
+            <textarea style="width:200px;height: 50px;" id="impexp"></textarea>
+        </div>
+    </div>
+
 
 </body>
 
