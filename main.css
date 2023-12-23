@@ -139,3 +139,13 @@ tr {
     font-size: min(3vw, 14px);
     
 }
+
+.deletebtn {
+    color: red;
+    cursor:pointer;
+    font-size: 20px;
+}
+
+#impexp {
+    resize:none;
+}

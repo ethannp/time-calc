@@ -36,10 +36,10 @@ function onChange() {
         }
         document.getElementById("payResult").textContent = "$" + pay;
     } else if (document.getElementById("cas1").checked) {
-        document.getElementById("payResult").textContent = "$1600";
+        document.getElementById("payResult").textContent = "$2000";
         document.getElementById("infoPay").textContent = "";
     } else {
-        document.getElementById("payResult").textContent = "$2400";
+        document.getElementById("payResult").textContent = "$2800";
         document.getElementById("infoPay").textContent = "";
     }
     let patient = 0;
@@ -153,8 +153,8 @@ function loadData(numMonths) {
                 }
                 row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${name}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m<br>${pay}<div class='bar'></div>$${patient}</td>`;
                 const deleteRowBtn = document.createElement("td");
-                deleteRowBtn.innerHTML = "X"
-                deleteRowBtn.style.color = "red"
+                deleteRowBtn.innerHTML = "X";
+                deleteRowBtn.classList.add("deletebtn")
                 deleteRowBtn.addEventListener("click", () => deleteRow(i, j));
                 row.appendChild(deleteRowBtn);
                 table.appendChild(row);
