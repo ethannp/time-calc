@@ -23,12 +23,12 @@ function onChange() {
     if (document.querySelector('input[name="calcType"]:checked').value == "default") {
         let pay = 0;
         if (hours == 0) {
-            pay = (500).toFixed(2);
+            pay = (600).toFixed(2);
             document.getElementById("infoPay").textContent = "";
         } else {
-            pay = (500 + (hours - 1) * 450 + 450 * (mins / 60)).toFixed(2);
-            let str = `500${(hours > 1) ? " + " + (hours - 1) + "*450" : ""}${(mins > 0) ? " + (" + mins + "/60)*450" : ""}`
-            if (str != "500") {
+            pay = (600 + (hours - 1) * 550 + 550 * (mins / 60)).toFixed(2);
+            let str = `600${(hours > 1) ? " + " + (hours - 1) + "*550" : ""}${(mins > 0) ? " + (" + mins + "/60)*550" : ""}`
+            if (str != "600") {
                 document.getElementById("infoPay").textContent = str;
             } else {
                 document.getElementById("infoPay").textContent = "";
@@ -36,10 +36,10 @@ function onChange() {
         }
         document.getElementById("payResult").textContent = "$" + pay;
     } else if (document.getElementById("cas1").checked) {
-        document.getElementById("payResult").textContent = "$2000";
+        document.getElementById("payResult").textContent = "$2200";
         document.getElementById("infoPay").textContent = "";
     } else {
-        document.getElementById("payResult").textContent = "$2800";
+        document.getElementById("payResult").textContent = "$3100";
         document.getElementById("infoPay").textContent = "";
     }
     let patient = 0;
@@ -47,7 +47,7 @@ function onChange() {
         patient = 0;
         document.getElementById("infoPatient").textContent = ""
     } else {
-        patient = ((650 * (hours-1)) + 650 * (mins / 60)).toFixed(2);
+        patient = ((650 * (hours - 1)) + 650 * (mins / 60)).toFixed(2);
         let str = `${(hours > 1) ? (hours - 1) + "*650" : ""}${(hours > 1 & mins > 0 ? " + " : "")}${(mins > 0) ? " (" + mins + "/60)*650" : ""}`
         if (str != "650") {
             document.getElementById("infoPatient").textContent = str;
@@ -130,9 +130,9 @@ function loadData(numMonths) {
                 let overridePay = timeInfo.overridePay;
                 if (overridePay == undefined) {
                     if (hours == 0) {
-                        pay = (500).toFixed(2);
+                        pay = (600).toFixed(2);
                     } else {
-                        pay = (500 + (hours - 1) * 450 + 450 * (mins / 60)).toFixed(2);
+                        pay = (600 + (hours - 1) * 550 + 550 * (mins / 60)).toFixed(2);
                     }
                     totalVal += parseFloat(pay);
                     pay = "$" + pay;
@@ -149,7 +149,7 @@ function loadData(numMonths) {
                 if (hours == 0) {
                     patient = 0;
                 } else {
-                    patient = (((hours-1) * 650) + 650 * (mins / 60)).toFixed(2)
+                    patient = (((hours - 1) * 650) + 650 * (mins / 60)).toFixed(2)
                 }
                 row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${name}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m<br>${pay}<div class='bar'></div>$${patient}</td>`;
                 const deleteRowBtn = document.createElement("td");
@@ -267,7 +267,7 @@ document.getElementById("showMore").addEventListener("click", event => {
     loadData(-2)
 })
 
-function exp(){
+function exp() {
     let textarea = document.getElementById("impexp");
     textarea.value = en(localStorage.getItem("data"));
     textarea.focus();
@@ -275,20 +275,39 @@ function exp(){
     textarea.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(textarea.value).then(function() {
         document.getElementById("info").innerHTML = "Copied to Clipboard!";
-    }, function (err) {
+    }, function(err) {
         document.getElementById("info").innerHTML = "Please copy the text below.";
     })
-    
+
 
 }
 
 function imp() {
-    if(document.getElementById("impexp").value != "" && confirm("Warning: This will overwrite all of your currently saved data. Proceed?")) {
+    if (document.getElementById("impexp").value != "" && confirm("Warning: This will overwrite all of your currently saved data. Proceed?")) {
         localStorage.setItem("data", de(document.getElementById("impexp").value));
         window.location.reload();
     }
 }
 
-function en(c){var x='charCodeAt',b,e={},f=c.split(""),d=[],a=f[0],g=256;for(b=1;b<f.length;b++)c=f[b],null!=e[a+c]?a+=c:(d.push(1<a.length?e[a]:a[x](0)),e[a+c]=g,g++,a=c);d.push(1<a.length?e[a]:a[x](0));for(b=0;b<d.length;b++)d[b]=String.fromCharCode(d[b]);return d.join("")}
+function en(c) {
+    var x = 'charCodeAt',
+        b, e = {},
+        f = c.split(""),
+        d = [],
+        a = f[0],
+        g = 256;
+    for (b = 1; b < f.length; b++) c = f[b], null != e[a + c] ? a += c : (d.push(1 < a.length ? e[a] : a[x](0)), e[a + c] = g, g++, a = c);
+    d.push(1 < a.length ? e[a] : a[x](0));
+    for (b = 0; b < d.length; b++) d[b] = String.fromCharCode(d[b]);
+    return d.join("")
+}
 
-function de(b){var a,e={},d=b.split(""),c=f=d[0],g=[c],h=o=256;for(b=1;b<d.length;b++)a=d[b].charCodeAt(0),a=h>a?d[b]:e[a]?e[a]:f+c,g.push(a),c=a.charAt(0),e[o]=f+c,o++,f=a;return g.join("")}
+function de(b) {
+    var a, e = {},
+        d = b.split(""),
+        c = f = d[0],
+        g = [c],
+        h = o = 256;
+    for (b = 1; b < d.length; b++) a = d[b].charCodeAt(0), a = h > a ? d[b] : e[a] ? e[a] : f + c, g.push(a), c = a.charAt(0), e[o] = f + c, o++, f = a;
+    return g.join("")
+}
