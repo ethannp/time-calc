@@ -103,12 +103,15 @@ function downloadFile(i) {
     })[i];
     let fileName = "timecalc_" + monthData.month + "_" + monthData.year + ".csv";
     let text = "data:text/csv;charset=utf-8,date,name,startTime,endTime,totalTime,anesthesiaPay,patientBill\n";
+    let total = 0;
     for (let j = 0; j < monthData.times.length; j++) {
         let timeInfo = monthData.times[j];
         let [name, hours, mins, pay, patient, addToTotal] = calcStats(timeInfo);
+        total += addToTotal;
         text += `${monthData.month}/${timeInfo.date},${name},${timeInfo.startTime},${timeInfo.endTime},${hours}h${mins}m,${pay.replace(/[^0-9.]/g, "")},${patient}\n`
     }
-    //download
+    text += `,Total,,,,${total},`
+        //download
     var encodedUri = encodeURI(text);
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);
