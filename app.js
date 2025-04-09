@@ -59,7 +59,64 @@ function onChange() {
     document.getElementById("patientResult").textContent = `$${patient}`
 }
 
+function calcStats(timeInfo) {
+    const startTime = timeInfo.startTime.split(":").map(Number);
+    const endTime = timeInfo.endTime.split(":").map(Number);
+    const diffMinsTotal = (endTime[0] * 60 + endTime[1]) - (startTime[0] * 60 + startTime[1]);
+    const hours = Math.floor(diffMinsTotal / 60);
+    const mins = diffMinsTotal % 60;
+    let pay = 0;
+    let overridePay = timeInfo.overridePay;
+    let addToTotal = 0;
+    if (overridePay == undefined) {
+        if (hours == 0) {
+            pay = (600).toFixed(2);
+        } else {
+            pay = (600 + (hours - 1) * 550 + 550 * (mins / 60)).toFixed(2);
+        }
+        addToTotal = parseFloat(pay);
+        pay = "$" + pay;
+    } else {
+        addToTotal = parseFloat(overridePay.replace(/[^0-9.]/g, ""));
+        pay = "* " + overridePay;
+    }
+    let name = timeInfo.name;
+    if (name == undefined) {
+        name = "";
+    }
+    let patient = 0;
+    if (hours == 0) {
+        patient = 0;
+    } else {
+        patient = (((hours - 1) * 650) + 650 * (mins / 60)).toFixed(2)
+    }
+    return [name, hours, mins, pay, patient, addToTotal];
+}
 
+function downloadFile(i) {
+    let monthData = JSON.parse(localStorage.getItem("data")).sort((a, b) => {
+        if (a.year != b.year) {
+            return b.year - a.year
+        } else {
+            return b.month - a.month
+        }
+    })[i];
+    let fileName = "timecalc_" + monthData.month + "_" + monthData.year + ".csv";
+    let text = "data:text/csv;charset=utf-8,date,name,startTime,endTime,totalTime,anesthesiaPay,patientBill\n";
+    for (let j = 0; j < monthData.times.length; j++) {
+        let timeInfo = monthData.times[j];
+        let [name, hours, mins, pay, patient, addToTotal] = calcStats(timeInfo);
+        text += `${monthData.month}/${timeInfo.date},${name},${timeInfo.startTime},${timeInfo.endTime},${hours}h${mins}m,${pay.replace(/[^0-9.]/g, "")},${patient}\n`
+    }
+    //download
+    var encodedUri = encodeURI(text);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link); // Required for FF
+
+    link.click();
+}
 
 function loadData(numMonths) {
     try {
@@ -121,36 +178,8 @@ function loadData(numMonths) {
             for (let j = 0; j < data[i].times.length; j++) {
                 let timeInfo = data[i].times[j];
                 let row = document.createElement("tr");
-                const startTime = timeInfo.startTime.split(":").map(Number);
-                const endTime = timeInfo.endTime.split(":").map(Number);
-                const diffMinsTotal = (endTime[0] * 60 + endTime[1]) - (startTime[0] * 60 + startTime[1]);
-                const hours = Math.floor(diffMinsTotal / 60);
-                const mins = diffMinsTotal % 60;
-                let pay = 0;
-                let overridePay = timeInfo.overridePay;
-                if (overridePay == undefined) {
-                    if (hours == 0) {
-                        pay = (600).toFixed(2);
-                    } else {
-                        pay = (600 + (hours - 1) * 550 + 550 * (mins / 60)).toFixed(2);
-                    }
-                    totalVal += parseFloat(pay);
-                    pay = "$" + pay;
-                } else {
-                    totalVal += parseFloat(overridePay.replace(/[^0-9.]/, ""));
-                    pay = "* " + overridePay;
-                }
-
-                let name = timeInfo.name;
-                if (name == undefined) {
-                    name = "";
-                }
-                let patient = 0;
-                if (hours == 0) {
-                    patient = 0;
-                } else {
-                    patient = (((hours - 1) * 650) + 650 * (mins / 60)).toFixed(2)
-                }
+                let [name, hours, mins, pay, patient, addToTotal] = calcStats(timeInfo);
+                totalVal += addToTotal;
                 row.innerHTML = `<td>${data[i].month}/${timeInfo.date}</td><td>${name}</td><td>${timeInfo.startTime} - ${timeInfo.endTime}</td><td>${hours}h ${mins}m<br>${pay}<div class='bar'></div>$${patient}</td>`;
                 const deleteRowBtn = document.createElement("td");
                 deleteRowBtn.innerHTML = "X";
@@ -160,7 +189,7 @@ function loadData(numMonths) {
                 table.appendChild(row);
             }
 
-            total.innerHTML = `Total Month Pay: <b>$${totalVal.toFixed(2)}</b>`
+            total.innerHTML = `<p><input type="button" onclick="downloadFile(${i});" value="Download month"></p>Total Month Pay: <b>$${totalVal.toFixed(2)}</b>`
             details.appendChild(summary);
             details.appendChild(total);
             details.appendChild(table);
