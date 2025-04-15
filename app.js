@@ -35,7 +35,7 @@ function onChange() {
             }
         }
         document.getElementById("payResult").textContent = "$" + pay;
-    } else if (document.getElementById("cas1").checked) {
+    } else if (document.getElementById("arch1").checked) {
         document.getElementById("payResult").textContent = "$2200";
         document.getElementById("infoPay").textContent = "";
     } else {
