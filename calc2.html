@@ -9,13 +9,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="main.css">
-    <script src="app.js" defer></script>
+    <script src="app2.js" defer></script>
 </head>
 
 <body>
     <div class="container center">
-        <a href="calc2.html">Switch to new calculator</a>
-        <h1>Time Calculator</h1>
+        <a href="index.html">Switch to original calculator</a>
+        <h1 style="color: blue">Time Calculator 2 (new)</h1>
         <p>Enter date</p>
         <input type="date" id="date">
         <p>Enter start time</p>
@@ -26,35 +26,27 @@
         <input type="text" id="name" onchange="onChange()">
         <p></p>
 
-        <input type="radio" onchange="onChange()" name="calcType" id="default" value="default" checked>
-        <label for="default">Default Calculator</label>
-        <input type="radio" onchange="onChange()" name="calcType" id="arch1" value="arch1">
-        <label for="arch1">Arch 1 ($2200)</label>
-        <input type="radio" onchange="onChange()" name="calcType" id="arch2" value="arch2">
-        <label for="arch2">Arch 2 ($3100)</label>
-        <br/>
-        <i>Payscale was updated on 2/1/2025</i>
+        <input type="radio" onchange="onChange()" name="calcType" id="800hr" value="800hr" checked>
+        <label for="800hr">$800/hr</label>
+        <input type="radio" onchange="onChange()" name="calcType" id="100hr" value="100hr">
+        <label for="100hr">$100/hr</label>
         <hr>
         <p>Time difference</p>
         <span id="diffCont">
             <p style="margin-top: 0px;"><b id="diffResult">0h 0m</b></p>
         </span>
-        <p>Anesthesia Pay</p>
+        <p>Pay</p>
         <span id="payCont">
             <p style="margin-top: 0px;"><b id="payResult">$</b></p>
         </span>
         <p id="infoPay"></p>
-        <p>Patient Bill</p>
-        <span id="patientCont">
-            <p style="margin-top: 0px;"><b id="patientResult">$</b></p>
-        </span>
-        <p id="infoPatient"></p>
+
         <button onclick="save()" id="saveBtn">Save</button>
         <p id="resultText"></p>
         <hr>
     </div>
     <h2 style="text-align:center;">History</h2>
-    <p class="container"><i style="font-size: 14px;">* indicates that the pay is an override</i></p>
+
     <div class="largeContainer" id="ranges" style="margin-bottom: 20px;">
     </div>
     <span class="container" id="showMore" style="display:none">[Show more months]</span>
